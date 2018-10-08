@@ -1,24 +1,36 @@
-export ZSH=/home/shambi07/.oh-my-zsh
-pathfix=$(echo "${PWD}" | /usr/bin/sed 's|/cygdrive/c/|C://|g;s/\//\\/g')
-export pathfix
+#!/bin/zsh
+setopt extendedglob
+export ZSH=/home/rob/.oh-my-zsh
+export EDITOR=/bin/nano
+export VISUAL=/bin/nano
+export CODING=${HOME}/Documents/Coding
+export SUDO_ASKPASS=/usr/bin/ssh-askpass
 
-ZSH_THEME="fox"
-HYPHEN_INSENSITIVE="true"
-DISABLE_AUTO_UPDATE="true"
-ENABLE_CORRECTION="true"
-HIST_STAMPS="mm/dd/yyyy"
+ZSH_THEME="kiwi"
 
-plugins=(zsh-autosuggestions theme git)
+plugins=(battery colored-man-pages colorize common-aliases fast-syntax-highlighting git history sudo thefuck themes tmux torrent z zsh-autosuggestions zsh-completions zsh-navigation-tools)
+
+autoload -U compinit && compinit
+
+. /home/rob/.oh-my-zsh/plugins/z/z.sh
 
 source $ZSH/oh-my-zsh.sh
-source $HOME/.zsh_alias
-source $HOME/.zsh_functions
-#source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-#alias ls='ls --file-type --group-directories-first --color=auto'
-alias grep='grep --color=auto'
+if [[ -f $HOME/.zsh_functions ]]; then
+	. $HOME/.zsh_functions
+fi
 
-# echo ${ZDOTDIR:-$HOME}/.zkbd/
-setopt BRACE_CCL COMPLETE_ALIASES
-APTS=( $(apt-cyg list ".*") )
-MY_IP="50.178.83.159"
+alias ls="ls --color=auto --group-directories-first --file-type"
+
+if [[ -f $HOME/.zsh_alias ]]; then
+	. $HOME/.zsh_alias
+fi
+
+autoload -Uz predict-on zmv zed zcalc
+
+export PATH=/home/rob/.local/bin:/home/rob/Documents/Coding/zsh:$PATH
+export PATH="$(perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, $ENV{PATH}))')"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export TERM=xterm-256color
