@@ -1,130 +1,100 @@
 #!/bin/zsh
-##############
-# MY ALIASES #
-##############
+############
+#MY ALIASES#
+############
 
-# AUTOMATION
-alias new='xdotool key ctrl+shift+t; xdotool keyup ctrl+shift+t'
-alias xdt='xdotool'                     #  ^ Open a new tab in a terminal
-alias full='xdotool key ctrl+shift+F11' #  Change the view to fullscreen (Yakuake only)
+# ZSH TOOLS
+alias getzopts='paste <(echo ${(Fk)options}) <(echo ${(F)options}) | sort '
 
+# TAR TOOLS
+alias targzview='tar -tvzf'
+alias tarview='tar -tvf'
+alias extargz'tar -xvzf'
+
+# OTHER TOOLS
+alias ac='tail -1 /sys/class/power_supply/AC/uevent'
+alias vimrc='nano ~/.vimrc'
 # BASH + SHELL FEATURES
-alias balias='nano ~/.zsh_alias'
-alias bfunc='nano ~/.zsh_functions'
-alias bscript='cd ~/Documents/Scripting/BASH/'
-alias nnrc='nano ~/.nanorc'
-alias soursh='source ~/.zshrc'
-alias shrc='nano ~/.zshrc'
-alias zal='nano ~/.zsh_alias'       #  Open .zsh_alias in nano
-alias zunc='nano ~/.zsh_functions'  #  Open .zsh_functions in nano
-alias zset='nano ~/.zshset'         #  Open .zshset in nano
-alias zrc='nano ~/.zshrc'           #  Open .zshrc in nano
-alias zsrc='source ~/.zshrc'        #  Source the .zshrc file, which will access all others in the process
-alias ncolors='nano ~/.zsh_colors'	#  Edit colors file
-
-# ARCHIVE ALIASES
-alias tarmk='tar -cvf'
-alias tarex='tar -xvf'
-alias tarls='tar -tvf'
-alias taradd='tar -rvf'
-alias gz='gzip'                     #  GZIP from STDIN
-alias ungz='gunzip'                 #  Extract .gz FROM STDIN
-
+alias balias='nano ~/.zsh_alias'    #  Open .zsh_alias in nano
+alias bfunc='nano ~/.zsh_functions' #  Open .zsh_functions in nano
+alias c='thunar . &'				#  Open current directory in file manager
+alias edal='nano ~/.oh-my-zsh/plugins/common-aliases/common-aliases.plugin.zsh'
+alias nnrc='nano ~/.nanorc'			#  Edit .nanorc file
+alias ncam='nano ~/.webcamrc'		#  Edit .webcamrc file
+alias powerinfo='upower -i /org/freedesktop/UPower/devices/battery_BAT0'
+alias shrc='nano ~/.zshrc'          #  Open .zshrc in nano
+alias soursh='source ~/.zshrc'      #  Source the .zshrc file, which will access all others in the process
+alias ifw='iwconfig'
+alias iwc='iwconfig'
+alias ifc='ifconfig'
+alias zshplugins='grep "^plugins" ~/.zshrc  | sed -r "s/plugins\=//g;s/[(]|[)]//g"'
 # SHORTCUTS
-alias figlet='figlet -w 150'
-alias pvid="$( cd "$( cat ~/.pvid )" && pwd )"  # ENTER VEGAS PROJECT FOLDER
-
-# FTP SHORTCUT
-alias robladen='ncftp -u robladen -p Werebotion1! us4.siteground.us'
-
+alias cdpraw=cd /usr/local/lib/python2.7/dist-packages/praw
+#alias gch='zcat -l'		#  List contents of a .gz file
+alias gz='gzip'			#  GZIP from STDIN
+alias ungz='gunzip'		#  Extract .gz FROM STDIN
+alias wiz='which -a'
+alias ris=ristretto
+alias ytd='youtube-dl'
+alias xd='xdotool'
 # BASIC COMMAND TOOLS
-alias ..='cd ..'
-alias backit='rsync -avz'
-alias bins='less ~/Logs/syslog/binaries/list/07-12/all-bins-07-12-16'
-alias cdd='cd .. && cd ..'          #  Go back 2 levels
-alias cd..='cd-up'                  #  Shortcut for cd-up command
-alias chrome='google-chrome-stable' #  Open Google Chrome by typing chrome
-alias chx='chmod +x'                #  Make a file executable by the current user
-alias cl='clear'                    #  Clear
-alias cls='clear ; ls'              #  Clear and list directory
-alias cp='cp -iv'                   #  No-clobber
-alias diff='colordiff'              #  Use colordiff in all cases of diff output
-alias df='df -kTh'                  #  Includes type of disk drive in output
-alias du='du -kh'                   #  Disk usage displayed better
-alias find='/usr/bin/find'          #  Fixes the find issue
-alias free='free -m'                #  RAM info listed in MB format
-alias h='history'                   #  View command history with ease
-alias j='jobs -l'                   #  View any runnning jobs
-alias md='mkdir -p'                 #  Make new directories to the target
-alias more=less                     #  Ease of use, allowing scrolling up/down
-alias mv='mv -iv'                   #  Verbose, non-clobber move
-alias n='nano'                      #  Shortcut for opening Nano
-alias sort='/usr/bin/sort.exe'      #  Sort fixer
-alias rm='rm -iv'                   #  Verbose/no-clobber
-alias whe='type -a'                 #  Find executable files
-alias where='type -a'               #  Find any executable location
-alias which='type -a'               #  Find executable files
-alias wiz='whereis'                 #  Find executables along with their dependencies
+alias catt='cat -t'
+alias cdd='cd .. && cd ..'			#  Go back 2 levels
+alias chx='sudo chmod +x'			#  Make a file executable by the current user
+alias cl='clear'					#  Clear
+alias cls='clear ; ls'				#  Clear and list directory
+alias cp='cp -iv'					#  No-clobber
+alias diff='colordiff'				#  Use colordiff in all cases of diff output
+alias df='df -kTh'					#  Includes type of disk drive in output
+alias du='du -kh'					#  Disk usage displayed better
+alias dub='du -b'					#  Disk usage in bytes
+alias duu='du *'					#  du on all files in current directory
+alias dut='du -BK --time --time-style="+%t%D%t%T"'
+alias free='free -m'				#  RAM info listed in MB format
+alias h='history'					#  View command history with ease
+alias j='jobs -l'					#  View any runnning jobs
+alias md='mkdir -p'					#  Make new directories through to target
+alias more=less						#  Ease of use, allowing scrolling up/down
+alias mv='mv -iv'					#  Verbose, non-clobber move
+alias n='nano'						#  Shortcut for opening Nano
+alias rm='rm -iv'					#  Verbose/no-clobber
+alias rmdir='rm -rfv'				#  Remove directory verbose
+alias whe='type -a'					#  Find executable files
+alias where='type -a'				#  Find any executable location
+alias which='type -a'				#  Find executable files
 
 # LS TOOLS
-alias la='ls -CF'                   #  Column list with filetype indicators
-alias la='ls -lAh'                  #  Display hidden files in full column
-alias ll='ls -lh'                   #  Display full column
-alias l='ls -gGh'                   #  Display full column without user/group
-alias lsg='ls *'                    #  Globbed ls
-alias lsh='ls -o -n -h'             #  Full column with UID instead of username
-alias lsr='ls -sFh --si'            #  Column with metric size listing
-alias lm='ll | more'                #  Pipe through *more*
-alias lc='ls -ltcr'                 #  Sort by/show change time, most recent last.
-alias lk='ls -lSr'                  #  Sort by size, biggest last.
-alias lt='ls -ltr'                  #  Sort by date, most recent last.
-alias lu='ls -ltur'                 #  Sort by/show access time, most recent last.
-alias lx='ls -lXB'                  #  Sort by extension.
-alias lr='ll -R'                    #  Recursive ls
-alias tree='tree -Csuh'             #  Nice alternative to 'recursive ls'
+alias la='ls -lAh'					#  Display hidden files in full column
+alias ll='ls -lh'					#  Display full column
+alias l='ls -gGh'					#  Display full column without user/group
+alias lc='ls -ltcr'					#  Sort by/show change time, most recent last.
+alias lk='ls -lSr'					#  Sort by size, biggest last.
+alias lt='ls -ltr'					#  Sort by date, most recent last.
+alias lta='ls -ltAr'				#  ^^ including hidden files.
+alias ltt='ls -lt'					#  Sort by date, most recent first.
+alias lu='ls -ltur'					#  Sort by/show access time, most recent last.
+alias lx='ls -lXB'					#  Sort by extension.
+alias lr='ll -tR'					#  Recursive ls
+alias tree='tree -CDuh'				#  Tree defaults
 
-# PACKAGE BUILD TOOLS
-alias aurs='pacaur -s'              #  Searches for the package(s) listed
-alias aurinfo='pacaur -i'           #  Shows more detailed information on a target
-alias aurdl='pacaur -d'             #  Downloads a package to build (from source)
-alias aursync='pacaur -Sy'          #  Rebuild AUR repository
-alias aursynfull='pacaur -Syu'      #  Completely rebuild AUR repository, ground up
-alias aurch='pacaur -k'             #  Checks4updates in AUR, checks all manually installed
-alias aurup='pacaur -u'             #  Update AUR packages, run aurch first then this
-alias aurfull='pacaur -Su'          #  Full system upgrade (for AUR packages)
-alias aup='yaourt -Syu --aur'       #  Full upgrade of all AUR packages using unsafe binary
-alias pacdb='sudo pacman -Syy'      #  Refresh the sync database
-alias pacdown='sudo pacman -Suu'    #  Fix a broken db
-alias pacinfo='sudo pacman -Ss'     #  Get information a package in the repositories
-alias pacmans='sudo pacman -S'      #  Install a package
-alias pact='sudo pacman -U'					#  Update a package
-alias pacup='sudo pacman -Syu'      #  Updates database and all packages installed
-alias paqi='pacman -Qi'             #  Verbose output of query
-alias paq='pacman -Q'               #  Query a package's version
-# NO MORE AFTER THIS LINE, OR function packer() IN .ZSH_FUNCTIONS MUST BE EDITED
+# APT-ALIAS
+alias aptin='sudo apt-get install -y'
+alias apts='sudo apt search'
+alias aptp='sudo apt-get purge'
+alias aptrem='sudo apt-get remove'
+alias aptauto='sudo apt autoremove'
+alias aptup='sudo apt-get update'
+alias aptupup='sudo apt-get update && sudo apt-get upgrade'
+alias aptfix='sudo apt-get update --fix-missing'
+alias lspkgs='sudo apt list 2>/dev/null | command grep installed'
+alias aptshow='sudo apt show'
 
-# ENCRYPTION
-alias gpgen='gpg --gen-key'         #  Generate a new GPG key
-alias degpg='gpg --decrypt-files'   #  Decrypt a GPG encrypted file
-alias engpg='gpg --encrypt-files'   #  Encrypt a file using your GPG
-alias gpgl='gpg --list-keys'        #  List keys currently in the keyring
+# TRANSLATE CHARS
+alias tru='tr "[:lower:]" "[:upper:]"'
+alias trl='tr "[:upper:]" "[:lower:]"'
 
-#############
-#GIT ALIASES#
-#############
-
-alias ga='git add -A'               #  Add file contents to the index
-alias gp='git push'                 #  Update remote refs along with associated objs
-alias gl='git log'                  #  Show commit logs
-alias gs='git status'               #  Show the working tree status
-alias gd='git diff'                 #  Show the changes between commits
-alias gm='git commit -m'            #  Commit using a message in the following text
-alias gma='git commit -am'          #  Auto-Stage all tracked, modified files before commit
-alias gb='git branch'               #  List, create, or delete git branches
-alias gc='git checkout'             #  Switch branches or restore working tree files
-alias gra='git remote add'          #  Add a named remote <name> at the specified <URL>
-alias grr='git remote rm'           #  Remove a remote named <name>
-alias gpu='git pull'                #  Fetch from and integrate with a repository or branch
-alias gcl='git clone'               #  Clone a repo into a new directory
-alias gta='git tag -a -m'           #  -a creates the tag object, -m allows the user to type the message
-alias gf='git reflog'               #  Manage reference log information, such as when updates occur
+# LINE NUMBERING
+alias nlr='nl -n rn'				#  Right justify with no leading zeroes
+alias nll='nl -n ln'				#  Left justify with no leading zeroes
+alias nlrl='nl -n rz'				#  Right justify with leading zeroes
+alias nla='nl -b a'					#  Number all lines
