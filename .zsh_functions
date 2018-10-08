@@ -4,25 +4,99 @@
 # These functions have been created by Rob Ladendorf (rioted@gmail.com) #
 #                                                                       #
 #-----------------------------------------------------------------------#
+function getsec()
+{
+	echo "\$SECONDS: ${SECONDS}"
+}
+function search()
+{
+	firefox -search "${argv[@]}" # $[ARGC] "$@" &
+}
+function attempt()
+{
+	for i in $(seq 1 ${#aliases}); do echo -e ${(k)aliases:${i}:1} "\t\t" ${aliases:${i}:1}; done | nl
+}
+function date-printf()
+{
+	date --help | egrep -i "^(\ )?+\%" | esed 's/^(\ )?+//g'
+}
+function timealive()
+{
+	bc -l <<< "($(date +%s) - $(date --date="05/07/1992" +%s))"
+}
+function dweek()
+{
+	date +"DAY:%t%j%nWEEK:%t%W"
+}
+function dfcspace()
+{
+	dfc -p /dev/sda1 -u m -d | awk '/\/dev\//{ print $5 }'
+}
+function rmd()
+{
+	find . -depth -type d -exec rmdir {} \;
+}
+function mvmd()
+{
+	mkdir -p ${2}
+	mv $1 -t $2
+}
+function nsyn() { ls -1 ~/.nano | cut -d . -f1 | grep -v -e Readme -e search_history -e Default ;}
+function sa() { "$@" | awk '/Size/{ print $2/1024/1024"MB" }';}
+function btusd()
+{
+	echo "$(date +%D\ %T)\n\$$(curl -s https://api.coindesk.com/v1/bpi/currentprice.json | jq ".bpi.USD.rate" | tr -d \" | tr -d , | cut -d "." -f1)"
+}
 
-function winfunc()
+function aliaschk()
 {
-	ps -aeW | awk '{$1=$2=$3=$4=$5=$6=$7="";}/C:\\/{print $0}' | sed 's/\       //g;s/^..\ //g' | sort
+	command -v "$@" | sed -r "s/(.*)['](.*)['](.*)/\2/g"
 }
-function 2func()
+
+function aptls()
 {
-	winfunc |  awk '{ print $0"\n" }' | less -R
+	sudo apt list 2>/dev/null | command grep installed | awk -F / '{ print $1 }'
 }
+
+function aptshowall()
+{
+	aptls=$(sudo apt list 2>/dev/null | command grep installed | awk -F / '{ print $1 }')
+	echo $aptls | n-panelize && echo ${selected}
+	#for i in $(awk -F / '{ print $1 }' <<< $(aptls)); do
+	#	sudo apt show $i
+	#done
+}
+
+function apt-pic()
+{
+#	for i in read; do
+	aptls
+}
+
+function triplog()
+{
+	awk '{ $1=$2=""; print $0 }' ~/.weechat/logs/irc.tripsit.\#drugs.weechatlog | sed 's/.*--.*//g' | sed '/^$/d;s/^\ \ //g'
+}
+
+function cdcam()
+{
+	#local DIRS=( $(command tree -nd ${HOME}/Pictures/Webcam/ | awk '$2 !~ /directories/{ print $2 }') )
+	#printf "%s\n" $DIRS
+	#cd ~/Pictures/Webcam/${DIRS[1]}/${DIRS[2]}
+	cd ~/Pictures/Webcam/
+	pwd && ls
+}
+
 function eanniversary()
 {
 	ANNI=1474101800 ; date --date="@$ANNI"
 	TIMETIL=$(echo $(( $ANNI - $(date +%s) )) | sed 's/[-]//g')
-	printf "\n" ; figlet -c -t -f 4max $( echo "DATING " $(( ${TIMETIL} / 24 / 60 / 60 )) ) DAYS ; print "\n"	
+	printf "\n" ; figlet -c -t -f 4max $( echo "DATING " $(( ${TIMETIL} / 24 / 60 / 60 )) ) DAYS ; print "\n"
 }
 function inobit() # GET ALL OBITS FOR THE STATE
 {
-	curl -s "http://www.legacy.com/ns/obitfinder/obituary-search.aspx?Page=1&countryid=1&daterange=Last3Days&stateid=0&keyword=&entriesperpage=1000" | grep -o 'target="_blank">\(.*\)<' | sed 's/target="_blank">//g;s/[<]//g' | sort # | grep -v -e img -e July -e '^[[:digit:]]'
-	#curl -s http://www.legacy.com/obituaries/nwitimes/browse | sed 's/{/\n/g' | grep -i 'firstname' | cut -d '"' -f1-8 | sed 's/"/ /g' | awk '{ print $3, $7 }' | sort -k2
+	curl -s "http://www.legacy.com/ns/obitfinder/obituary-search.aspx?Page=1&countryid=1&daterange=Last3Days&stateid=0&keyword=&entriesperpage=1000" | grep -o 'target="_blank">\(.*\)<' | sed 's/target="_blank">//g' | sed 's/[<]//g' | sort | grep -v -e img -e July -e '^[[:digit:]]'
+	curl -s http://www.legacy.com/obituaries/nwitimes/browse | sed 's/{/\n/g' | grep -i 'firstname' | cut -d '"' -f1-8 | sed 's/"/ /g' | awk '{ print $3, $7 }' | sort -k2
 }
 function rmlns() # REMOVE ALL BLANK LINES
 {
@@ -31,65 +105,41 @@ function rmlns() # REMOVE ALL BLANK LINES
 
 function ffind() # FIND (CASE INSENSITIVE) FROM ROOT EXCLUDING CYGDRIVE
 {
-	 /usr/bin/find / -xdev -depth | grep -i "$1"
-}
-function gfind() # FIND (CASE INSENSITIVE) FROM ROOT EXCLUDING CYGDRIVE
-{
-	find / -xdev -depth | grep -i "$1"
+	find / -xdev -depth | grep -i ${1}
 }
 function spaceprice()
 {
-	curl -s http://pastebin.com/raw/wSbNGdDw | grep -A 10 -e 'Stock' -e "^\[" | grep -v "SpaceCrystal" | tail -n+15
+	curl -s "http://pastebin.com/raw/wSbNGdDw" | grep -A 10 -e 'Stock' -e "^\[" | grep -v "SpaceCrystal" | tail -n+15
 }
 function space()
 {
-	curl -s http://pastebin.com/raw/wSbNGdDw | grep '^\[' | sed 's/\]//g;s/\[//g' | grep -v 'All products' | sed 's/[//,]/ /g' | awk '{ print $1 }' | /usr/bin/sort.exe
+	curl -s "http://pastebin.com/raw/wSbNGdDw" | grep '^\[' | sed 's/\]//g;s/\[//g' | grep -v 'All products' | sed 's/[//,]/ /g' | awk '{ print $1 }' | sort
 }
-#function pathfix() # FIX A PATH FOR CMD
-# {
-#	# FOR ROOT DRIVES
-#	if [[ "${PWD}" == "/cygdrive/c" ]]; then
-#		echo "${PWD}" | /usr/bin/sed 's|/cygdrive/c|C:\\|g'
-#	elif [[ "${PWD}" == "/cygdrive/h" ]]; then
-#		echo "${PWD}" | /usr/bin/sed 's|/cygdrive/h/|H:\\|g'
-#	# FOR ALL OTHER SUBFOLDERS
-#	elif [[ "${PWD}" =~ "/cygdrive/c/.*" ]]; then
-#		echo "${PWD}" | /usr/bin/sed 's|/cygdrive/c/|C:/|g;s/\//\\/g'
-#	elif [[ "${PWD}" =~ "/cygdrive/h/.*" ]]; then
-#		echo "${PWD}" | /usr/bin/sed 's|/cygdrive/h/|H:/|g;s/\//\\/g'
-#	else
-#	# FOR ANY FOLDERS IN THE CYGWIN64 LIBRARY
-#		echo "${PWD}" | /usr/bin/sed 's/\//\\/g;s/^/C:\\cygwin64/g'
-#	fi
-# }
-
-function winexp() # OPEN WD IN WIN EXPLORER
-{
-	explorer.exe $(pathfix)
-}
-
 function path()
 {
-	echo "$PATH" | sed 's/[:]/\n/g' | sort | grep -i -v "portable"
+	echo ${PATH} | sed 's/[:]/\n/g'
+	# old=$IFS
+	# IFS=:
+	# printf "%s\n" $PATH
+	# IFS=$old
 }
-
 function btcusd() # GET COINBASE'S CURRENT VALUE OF BTC IN USD
 {
 	local DATE=$(date +%D' @ '%T)
+	local LOCA="/usr/local/bin/bitcoin-prices-master/exchanges/Coinbase"
 	echo -e "\n"$DATE"\n"
-	bash -c /home/shambi07/.local/bin/bitcoin-prices-master/exchanges/Coinbase/api.sh && bash -c /home/shambi07/.local/bin/bitcoin-prices-master/exchanges/Coinbase/price.sh | read USD
+	bash -c ${LOCA}/api.sh && bash -c ${LOCA}/price.sh | read USD
+	# bash -c /usr/local/bin/bitcoin-prices-master/exchanges/Coinbase/api.sh && bash -c /usr/local/bin/bitcoin-prices-master/exchanges/Coinbase/price.sh | read USD
 	echo "$USD" | sed 's/.*/$& USD = 1 BTC/g'
 	printf "\n"
 }
-
-function btclogger() # GET COINBASE'S CURRENT VALUE OF BTC IN USD
-{
-	echo -e "\n\n"
-	bash -c /home/shambi07/bin/bitcoin-prices-master/exchanges/Coinbase/api.sh && bash -c /home/shambi07/bin/bitcoin-prices-master/exchanges/Coinbase/price.sh | read USD
-	echo "$USD" | sed 's/.*/$& USD = 1 BTC/g'
-	printf "\n"
-}
-
+#function btclogger() # GET COINBASE'S CURRENT VALUE OF BTC IN USD
+#{
+#	echo -e "\n\n"
+#	bash -c /home/shambi07/bin/bitcoin-prices-master/exchanges/Coinbase/api.sh && bash -c /home/shambi07/bin/bitcoin-prices-master/exchanges/Coinbase/price.sh | read USD
+#	echo "$USD" | sed 's/.*/$& USD = 1 BTC/g'
+#	printf "\n"
+#}
 
 # NEW FUNCTIONS FROM PASTEBIN
 
@@ -99,50 +149,38 @@ function wcn()
 # $2,"Bytes\n"
 # $1,"Newlines\n"
 }
-
 function hexer() # PRINTF THE HEXIT
 {
 	  printf "%s" $( hexit $1 )
 }
-
 function hexit() # CANONICAL SORTED HEXDUMP
 {
 	  hexdump -C $1 | awk '{ print $18 }' | sed 's/|//g' | sed 's|...||g'
 }
-
-# TESTING NEW FUNCTIONS
-
 function squareme()
 {
 	echo -e "\nThis function is used to square whatever number you input. Exit using Ctrl+D/Ctrl+C.\n\n"
 	awk '{ x=$0**2; print "\n\t"$1"² = " x"\n" }' - 2>&1 /dev/null
 }
-
 function fetchme()
 {
 	echo "Uptime:"
 	it=( $(uptime -p | awk '/Uptime/{ $1=$2=$3=$4=$5=""; print $6,$7 }' | sed 's/\x1b//g' | sed 's|\[0m||g' | grep -o '[[:digit:]]') )
 	echo ${it[1]}${it[2]} hours ${it[3]}${it[4]} minutes
 }
-# VIEW ALIAS/FUNCTION FILES
-
-function short()
-{
-	grep -e '.*[[:alnum:]]*=' -e '.*:' --color="always" ~/.shortcuts | awk '{ print; } $NR % 1 == 0 { print ""; }' | less -R
-}
-
 function calias()
 {
 	awk '{ print; } $NR % 1 == 0 { print ""; }' ~/.zsh_alias | less
 }
-
 function cfunc()
 {
 	awk '{ print; } $NR % 1 == 0 { print ""; }' ~/.zsh_functions | less
 }
-
 # MATH HELPERS
-
+function calc() # AWK MATH BITCH
+{
+	awk "BEGIN{print $*}";
+}
 function math() # BETTER MATH FUNCTION (LONG DECIMAL ANSWERS)
 {
 	bc -l<<<"$@"
@@ -163,22 +201,29 @@ function zz() # LEAVES ONLY 3 DECIMAL PLACES WHEN PIPING FROM MATH
 # LS COMMANDS
 function lsfunc()
 {
-	grep -e 'function.*().*' ~/.zsh_functions --color=never | sed 's/function //g' | grep -v lsfunc | sort
+	if [[ -n "$1" ]];
+	then
+		command grep -i ${1} < <(functions)
+	else
+		functions
+	fi
+	# grep -E 'function.*()' ~/.zsh_functions --color=never | sed 's/function //g' | grep -v lsfunc
 }
 
 function lsfa() # LIST ONLY HIDDEN FILES IN WD (NON-DIRS)
 {
-	ls -lA "$@" | grep '^[.]' | grep -v '/$' --color=never
+	find -L ${PWD} -type f -maxdepth 1 | sed 's@\./@@g'
+	#command ls -A "$@" | grep '^[.]' | grep -v '/$' --color=never
 }
 
 function lsf() # LIST ONLY NON-HIDDEN NON-DIRS IN WD
 {
-	command ls "$@" | grep -v '/$'
+	command ls --file-type "$@" | grep -v -e '/$' -e "@"
 }
 
 function lsfd() # LIST ONLY DIRS IN WD
 {
-	ls -F "$@" | grep '/$'
+	ls -F "$@" | command grep '/$'
 }
 
 function lsfad() # LIST ONLY HIDDEN DIRS IN WD
@@ -188,7 +233,14 @@ function lsfad() # LIST ONLY HIDDEN DIRS IN WD
 
 function lsop() # USEFUL FOR SEARCHING FOR ALL BINARIES
 {
-	ls /bin /sbin /usr/bin /usr/sbin /usr/local/bin | sort | uniq | grep $1 | grep -v "[.]dll$"
+	for i in $(printf "%s\n" ${PATH} | sed 's/[:]/\n/g'); do
+		ls ${i} 2>/dev/null | sort -u | command egrep -i "${1}" 2>/dev/null
+	done
+}
+
+function lsopman()
+{
+	for i in $(lsop $1); do man $i ; done
 }
 
 function lsc() # LIST NO. OF FILES (INCLUDING SYMBOLIC LINKS)
@@ -211,23 +263,39 @@ function bak()	# CREATES A BACKUP FILE FROM STDIN
 	   esac
 	 done
 }
-function pyn3()
+function zmd() # MAKE EXECUTABLE ZSH SCRIPT
 {
-	touch $1.py
-	echo "#!/bin/python3.4" >> $1.py
-	chmod +x $1.py
-}
-function pyn2()
-{
-	touch $1.py
-	echo "#!/bin/python2.7" >> $1.py
-	chmod +x $1.py
+	echo "#!/bin/zsh" > $1.zsh
+	chmod +x $1.zsh
 }
 function cmd() # MAKE EXECUTABLE SH SCRIPT
 {
-	touch $1.sh
 	echo "#!/bin/bash" > $1.sh
 	chmod +x $1.sh
+}
+function npy()
+{
+	echo "2 or 3?"
+	read -sk1 VAR
+	case $VAR in
+		2)
+		echo "#!/usr/bin/env python2.7" >> $1.py
+		;;
+		3)
+		echo "#!/usr/bin/env python3" >> $1.py
+		;;
+	esac
+	chmod +x $1.py
+}
+function awkmk()
+{
+	echo "#!/usr/bin/env awk" >> $1.awk
+	chmod +x $1.awk
+}
+function npl()
+{
+	echo "#!/usr/bin/perl" >> $1.pl
+	chmod u+x $1.pl
 }
 function debak() # RIDS WD OF ALL .BAK FILES
 {
@@ -297,16 +365,17 @@ function mdcd() # MAKE A DIRECTORY AND MOVE TO IT, ALSO CREATING SUBDIRECTORIES 
 # MONITOR BRIGHTNESS
 function slx() # CHANGE BRIGHTNESS (SLX 1-9)
 {
-	xrandr --output HDMI-0 --brightness $1.$2
+	xrandr --output eDP1 --brightness $1.$2
 }
 # PROCESS RELATED
 function my_ps() # GET PROCESSES THE USER STARTED
 {
-	ps -u shambi07
-# -o %pid,%cpu,%mem,bsdtime,command
+	ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command
 }
 function pp() # PICK A PROCESS FROM MY_PS
 {
+	local TITLE=$(ps -o pid,%cpu,%mem,bsdtime,command | head -1)
+	echo ${TITLE}
 	my_ps f | awk '!/awk/ && $0~var' var=${1:-".*"}
 }
 # ARCHIVE FUNCTIONS
@@ -353,28 +422,7 @@ function mx7z() # EXTRACT A TAR.7Z ARCHIVE
 	7za x $FILENAME.7z;
 	tar -xvf $FILENAME ; rm -f $FILENAME
 }
-# TARGZ targz targzview extargz tarview targzadd targzo
-function gzview()
-{
-	fn1=$(echo $1 | sed 's|[.]gz$||g')
-	fn2=$(echo $1)
-	# gunzip $1
-	# cat "${1%%.}"
-	echo $fn1 $fn2
-	echo "${1%%}.gz"
-	# gzip $1
-}
-function targzview() # VIEW CONTENTS OF A TAR.GZ FILE
-
-{
-	gunzip $1.tar.gz
-	tar -tvf $1.tar
-	gzip $1.tar
-}
-function tarview() # VIEW CONTENTS OF TAR FILE
-{
-	echo "tar -tvf ${1:+.tar}"
-}
+# TARGZ targz targzadd targzo
 function targzadd() # ADD STDIN FILE TO TAR.GZ ARCHIVE
 {
 	gunzip $1.tar.gz
@@ -385,10 +433,6 @@ function targzadd() # ADD STDIN FILE TO TAR.GZ ARCHIVE
 function targz() # CREATE TARGZ ARCHIVE FROM STDIN
 {
 	tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"
-}
-function targzex() # EXTRACT ARCHIVE TO WD
-{
-	tar -xvzf $1.tar.gz
 }
 # ZIP zipit
 function zipit() # CREATE ZIP ARCHIVE FROM STDIN
@@ -402,40 +446,8 @@ function cpuse() # DESCRIBES HOW TO USE FIND WITH CPIO
 	echo 'This will find all files starting from the LOCATION dir that use the extension and add them to a .cpio archive.'
 	#find /home/shambi07/ -iname $1 | cpio -o > $2.cpio
 }
-function cpioall() # MAKE A CPIO ARCHIVE OF CURRENT FOLDER, REMOVING ANY SPACES FROM TITLE
-{
-	local TIME=`date +%m-%d`
-	local BASE=`basename $PWD`
-	local MACE="$(echo $BASE | sed 's/ //g')"
-	title=$MACE-$TIME
-	find . -depth -print | cpio -oaV > $title.cpio
-	du $title.cpio
-	gzip $title.cpio
-	du $title.cpio.gz
-}
-function cpiowd() # MAKE CURRENT DIRECTORY INTO A CPIO ARCHIVE
-{
-	find . -depth -print0 | cpio --null -pvd $1
-}
-function cpiols() # USE LS TO CREATE A CPIO ARCHIVE
-{
-	ls | cpio -ov > $1.cpio
-}
-function cpview() # VIEW A CPIO ARCHIVES CONTENTS
-{
-	cpio -it < $1.cpio
-}
-function cpioex() # EXTRACT A CPIO ARCHIVE AND CONTENTS GO TO ORIGINAL DIRECTORY
-{
-	cpio -iv < $1.cpio
-}
-function cpiowdex() # EXTRACT CPIO TO WD
-{
-	cpio -idv --no-absolute-filenames < $1.cpio
-}
 
 # GET SUM OF FILE CONTENTS (psumof, sumof)
-
 
 function psumof() # PERLS SUM OF ALL NUMBERS IN A FILE
 {
@@ -444,29 +456,6 @@ function psumof() # PERLS SUM OF ALL NUMBERS IN A FILE
 function sumof() # SUM USING AWK
 {
 	awk '{sum+=$0} END {print sum}' $1
-}
-
-# FUNCTIONS TO GET INFORMATION ON OTHER FUNCTIONS
-
-function funcive() # LIST ARCHIVE FUNCTION TITLES
-{
-	grep -e '^# 7ZIP.*' -e '^# TARGZ.*' -e '^# ZIP.*' -e '^# CPIO.*' --color="never" ~/.zsh_functions | grep '^#.*' --color="never" | sort
-}
-function funcinfo() # GET DETAILED INFO ON ARCHIVE FUNCTIONS
-{
-	grep -e 'mc7z' -e 'mx7z' -e 'cpuse' -e 'cpiowd' -e 'cpiols' -e 'cpview' -e 'cpioex' -e 'cpiowdex' -e 'targz' -e 'targzview' -e 'extargz' -e 'tarview' -e 'targzadd' -e 'targzo' -e 'zipit' ~/.zsh_functions | sed 's/function //g' | sed 's/grep.*//g'
-}
-function exxin() # EXTRACTION FUNCTION (EXX) FILE USAGE
-{
-	grep '^# EXTRACTION' --color=never ~/.zsh_functions
-}
-function funcls() # PRINT ALL FUNCTIONS AND DEFINITIONS ALL AT ONCE
-{
-	grep '^function' ~/.zsh_functions | sed 's/function //g' | sort
-}
-function packls() # LIST ALIASES USED FOR PACKAGE MANAGEMENT
-{
-	awk '{ $1=""; print $0 }' ~/.zsh_alias | grep -A 19 'PACKAGE' --color="never"
 }
 
 # Colors for commands
@@ -498,6 +487,13 @@ On_Cyan="\e[46m"
 On_White="\e[47m"
 NC="\e[m"
 
-# function renamesmc() {
-#	printf "%s\n" * | sed "s/\ //g;s/[)]//g;s/[(]//g;s/[[]//g;s/[]]//g;s/[s/[']//g"
-# }
+function apt-installed() { grep " install" /var/log/dpkg.log | less ;}
+function battery-notification() { zenity --notification --text="$(batt)" ;}
+function statformat() { man stat | grep "%" ;}
+function get2() { egrep "^(\ |\t)+2"; }
+function sd() { sed -r 's/^(\ |\t)+//g' ;}
+function iwscan() { sudo iw dev wlo1 scan ;}
+function anf() { awk '{ print $NF }' ;}
+function hexsed() { echo $(xxd $1 | awk '{ print $NF }' | sed 's/\.//g;/^$/d') ;}
+function getargs() { man $1 | egrep "^[[:space:]]+\-[[:alpha:]]" ;}
+function chess-notation() { esed 's/([[:digit:]]{1,2}\.)/\n\1/g' $@ ;}
