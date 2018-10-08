@@ -1,2 +1,2 @@
 # shampricity
-FiSH, ZSH, and BASH scripts, functions, and more.
+My personal .zshrc, .zsh_functions, and .zsh_aliases. To be used when setting up new machines, or for sharing.
