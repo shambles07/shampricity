@@ -67,37 +67,6 @@ function aptshowall()
 	#done
 }
 
-function apt-pic()
-{
-#	for i in read; do
-	aptls
-}
-
-function triplog()
-{
-	awk '{ $1=$2=""; print $0 }' ~/.weechat/logs/irc.tripsit.\#drugs.weechatlog | sed 's/.*--.*//g' | sed '/^$/d;s/^\ \ //g'
-}
-
-function cdcam()
-{
-	#local DIRS=( $(command tree -nd ${HOME}/Pictures/Webcam/ | awk '$2 !~ /directories/{ print $2 }') )
-	#printf "%s\n" $DIRS
-	#cd ~/Pictures/Webcam/${DIRS[1]}/${DIRS[2]}
-	cd ~/Pictures/Webcam/
-	pwd && ls
-}
-
-function eanniversary()
-{
-	ANNI=1474101800 ; date --date="@$ANNI"
-	TIMETIL=$(echo $(( $ANNI - $(date +%s) )) | sed 's/[-]//g')
-	printf "\n" ; figlet -c -t -f 4max $( echo "DATING " $(( ${TIMETIL} / 24 / 60 / 60 )) ) DAYS ; print "\n"
-}
-function inobit() # GET ALL OBITS FOR THE STATE
-{
-	curl -s "http://www.legacy.com/ns/obitfinder/obituary-search.aspx?Page=1&countryid=1&daterange=Last3Days&stateid=0&keyword=&entriesperpage=1000" | grep -o 'target="_blank">\(.*\)<' | sed 's/target="_blank">//g' | sed 's/[<]//g' | sort | grep -v -e img -e July -e '^[[:digit:]]'
-	curl -s http://www.legacy.com/obituaries/nwitimes/browse | sed 's/{/\n/g' | grep -i 'firstname' | cut -d '"' -f1-8 | sed 's/"/ /g' | awk '{ print $3, $7 }' | sort -k2
-}
 function rmlns() # REMOVE ALL BLANK LINES
 {
 	grep -v "^$"
@@ -107,21 +76,10 @@ function ffind() # FIND (CASE INSENSITIVE) FROM ROOT EXCLUDING CYGDRIVE
 {
 	find / -xdev -depth | grep -i ${1}
 }
-function spaceprice()
-{
-	curl -s "http://pastebin.com/raw/wSbNGdDw" | grep -A 10 -e 'Stock' -e "^\[" | grep -v "SpaceCrystal" | tail -n+15
-}
-function space()
-{
-	curl -s "http://pastebin.com/raw/wSbNGdDw" | grep '^\[' | sed 's/\]//g;s/\[//g' | grep -v 'All products' | sed 's/[//,]/ /g' | awk '{ print $1 }' | sort
-}
+
 function path()
 {
 	echo ${PATH} | sed 's/[:]/\n/g'
-	# old=$IFS
-	# IFS=:
-	# printf "%s\n" $PATH
-	# IFS=$old
 }
 function btcusd() # GET COINBASE'S CURRENT VALUE OF BTC IN USD
 {
@@ -129,17 +87,9 @@ function btcusd() # GET COINBASE'S CURRENT VALUE OF BTC IN USD
 	local LOCA="/usr/local/bin/bitcoin-prices-master/exchanges/Coinbase"
 	echo -e "\n"$DATE"\n"
 	bash -c ${LOCA}/api.sh && bash -c ${LOCA}/price.sh | read USD
-	# bash -c /usr/local/bin/bitcoin-prices-master/exchanges/Coinbase/api.sh && bash -c /usr/local/bin/bitcoin-prices-master/exchanges/Coinbase/price.sh | read USD
 	echo "$USD" | sed 's/.*/$& USD = 1 BTC/g'
 	printf "\n"
 }
-#function btclogger() # GET COINBASE'S CURRENT VALUE OF BTC IN USD
-#{
-#	echo -e "\n\n"
-#	bash -c /home/shambi07/bin/bitcoin-prices-master/exchanges/Coinbase/api.sh && bash -c /home/shambi07/bin/bitcoin-prices-master/exchanges/Coinbase/price.sh | read USD
-#	echo "$USD" | sed 's/.*/$& USD = 1 BTC/g'
-#	printf "\n"
-#}
 
 # NEW FUNCTIONS FROM PASTEBIN
 
